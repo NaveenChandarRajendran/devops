@@ -1,0 +1,43 @@
+-----------------------------------
+RPM - Red Hat Package Manager
+-----------------------------------
+
+Install Package
+    ->rpm -i telnet.rpm
+
+Uninstall Package
+    ->rpm -e telnet
+
+Details/Query about Package
+    -> rpm -q telnet
+
+the rpm is straight forward install but it does not install the dependcy Package
+ex:
+    if you want to installl ansible just rpm - i ansible will install only the anisble.
+    But to run ansible it need python and other dependent package. 
+    To overcome this we will use YUM- package Managerss
+
+-----------------------------------
+YUM
+-----------------------------------
+yum install ansible
+
+It will download the nessecary packages.
+It will install on two ways
+The yum already have the some important repos in local system.It will check here 1st if not present
+It will search remote repos and dowanload
+
+yum repolist
+Shows the avaible repo list
+
+yum list ansible
+to see the version and other details of the packages
+
+yum remove ansible
+to remove the package
+
+yum --showduplicates lisst ansible
+it will show the duplicate ansible package with different versions.
+
+to install the particular version ansible
+yum install ansible-2.4.2.0

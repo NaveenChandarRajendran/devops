@@ -1,0 +1,20 @@
+The system A and B connected same network
+
+we can mention the ip address of B and call.
+Also we can give the host name for our readability.
+
+But doing like that the issue is for one IP address we can have lot of namee
+ex:
+312:313:231 db
+312:313:231 www.google.com
+
+ssh db will trigger the same host and
+ssh www.google.com will trigger same host.
+
+image we have lot of ip address means and it changed means we want to change it here also in many places.
+
+To manage the ip address everything we will have a centralized network called dns
+
+
+ex:
+199:232:21:213 

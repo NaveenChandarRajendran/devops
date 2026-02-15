@@ -1,0 +1,10 @@
+The concepts learning in this are
+    -> Linux Basics
+    -> Setup Lab Environment
+    -> Linux Networking Basics
+    -> JSON/YAML
+    -> Application Basics
+    -> Web Server
+    -> Database Basics
+
+

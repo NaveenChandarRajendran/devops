@@ -1,0 +1,23 @@
+----------
+switch
+----------
+    -> Computer a and b  both will connected with switch.
+    -> that switch will create the netwrok
+    -> once we add the IP address for both the devices a and b
+    -> connection will be established
+
+----------
+routing
+----------
+    -> IF A and b are connected with one netwrok by switch and C and D are connected with one network.
+    -> What if b and c needs to be connect.
+    -> In that case router will come. The router will connect the two networks.
+    -> In simple think router as service with multiple network ports.
+    -> The router will take one ip from each network
+    -> IF B send data to C means where the router is present in th enetwork.Because more netwrok will be preent.
+    -> In that case Gateway will be usefull
+
+----------
+Gateway
+----------
+    It is the door to the router to connect to other networks

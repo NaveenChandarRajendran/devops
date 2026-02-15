@@ -1,0 +1,130 @@
+-> Linux CLI
+-> VI editor
+-> Package Management
+-> Service Management
+
+Most preferred Linux OS
+    -> Ubuntu
+    -> Red hat Entraprise Linux(Paid)
+    -> CentOS
+
+CentOS is the free commutiity edition of RHEL. So learning centos also cover the RHEL.
+
+
+-----------------------------------
+Basic Commands
+-----------------------------------
+*)echo Hi
+Output -> Hi
+
+It simply print the text what ever we wrote after echo.
+IF we wrote with $ means that is variable.
+echo $shell
+Output -> bin/bash
+
+-----------------------------------
+Commands for directory
+-----------------------------------
+
+*) pwd
+Command is used to print the directory you currently in
+pwd
+/Naveen/dev
+
+*)mkdir
+Command to create new directory
+
+Single directory
+mkdir new_directory
+
+If you want to create more directory
+use -p option in mkdir
+ex : 
+    -> mkdir -p /tmp/asia/india/bangalore
+
+to remove the directory use rm
+ex:
+    -> rm -r /tmp/my_dir
+
+to copy the directory on location to other use cp
+Ex:
+    -> cp -r my_dir /tmp/my_dir
+
+-----------------------------------
+Commands for file
+-----------------------------------
+create a new file
+*) touch new_file.txt
+
+to edit on the file use cat
+ex: cat > new_file.txt
+propmt will come. Enter the content and press ctrl + D to save and exit
+
+to view the file content use cat without > simble
+ex: cat new_file.txt
+
+to copy the file use cp
+ex: cp new_file.txt copy_file.txt
+        (source)        (target)
+
+to move the file use mv
+ex: mv new_file.txt sample_file.txt
+
+to remove the file
+rm new_file.txt
+
+
+-----------------------------------
+VI Editor
+-----------------------------------
+It is used to open the file and edit it.
+
+vi filename.txt
+is used to open the file 
+
+to write the file press "i" to insert mode
+
+copy line yy
+cut line dd
+save :w or :w filename
+delete line dd
+quit :q
+save and quit :wq
+save and quit editor :wq!
+undo just u
+
+
+find /<word> /naveen and by presssing "n" will go next next finding words
+
+
+-----------------------------------
+More commands
+-----------------------------------
+
+User Accounts
+
+-> whoami
+mathew
+
+->id
+uid=1001(matthew)
+
+-> su aparna 
+to switch the users
+-> ssh aparna@192.168.1.2
+to login switch user to other system using ssh need to mention adddress.
+
+-----------------------------------
+Download files
+-----------------------------------
+
+curl http://www.some-site.com/some.file.txt -O
+to download the file need to give "-O" to download or else it will show the connect not download
+
+wget http://www.some-site.com/some.file.txt -O some.file.txt
+
+-----------------------------------
+CHeck OS Versions
+-----------------------------------
+
+ls/etc/*release*

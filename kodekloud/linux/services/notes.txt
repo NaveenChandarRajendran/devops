@@ -1,0 +1,69 @@
+-----------------------------------
+Start the services
+-----------------------------------
+
+service httpd Start
+or
+systemctl start httpd
+
+-----------------------------------
+Stop the services
+-----------------------------------
+systemctl stop httpd
+
+-----------------------------------
+Services status
+-----------------------------------
+systemctl status httpd
+
+-----------------------------------
+Services enable
+-----------------------------------
+systemctl enable httpd it will enable when system reboots
+
+-----------------------------------
+Services disable
+-----------------------------------
+systemctl disable httpd
+
+-----------------------------------
+Creating and running the own services
+-----------------------------------
+In real life we will have the service like python or nodejs, when we run the code it will start the server and we will get it in localhost
+
+to make that python to service we need to create an systemctl
+
+in location etc/systemd/system
+create the service file name with .service as end
+ex:
+-> file created as my_app.service
+-> write the content as
+-> 
+[Service]
+ExecStart=/usr/bin/pthon3/code/my_app.py
+-> system deamon-reload (reload so that our new created service will avaiable)
+
+-> systemctl start my_app
+
+-----------------------------------
+To start the service atuomaticaaly when boots
+-----------------------------------
+
+in my_app.service write the install setup.
+[Service]
+ExecStart=/usr/bin/pthon3/code/my_app.py
+
+[Install]
+WantedBy=multi-user.target
+
+-----------------------------------
+Before or After service start or stop
+-----------------------------------
+
+[Service]
+ExecStart=/usr/bin/pthon3/code/my_app.py
+ExecStartPre => start the configure before the service starts
+ExecStartPost ->  start the configure after the service stops
+
+[Install]
+WantedBy=multi-user.target

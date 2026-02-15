@@ -1,0 +1,67 @@
+-----------------------------
+Apache Web servers
+-----------------------------
+It is used to serve/host the web apllication as html,css and javascript. Mostly a static pages
+
+Installation:
+    -> In CentOS the Apache is present as default in the repository
+    SO in centos
+        ->yum install httpd
+        -> systemctl  start httpd
+
+View logs
+    -> Every httpd has access_log and error_log
+    -> cat /var/log/httpd/access_log
+    -> cat /var/log/httpd/error_log
+
+Config files
+    -> We will see the httpd configs what the ports are and change
+    -> location is /etc/httpd/conf/httpd.conf
+
+In Config the httpd can serve one or more applications
+Ex:
+In your laptop you have the application which shows the list of houses and next application you have list of oranges showing application.
+
+in the config file,we need to mention the <VirtualHost> for both the application
+
+Ex:
+in Config file 
+<VirtualHost *:80>
+    Servarname www.house.com
+    DocumentRoot /var/www/houses
+</VirtualHost/>
+
+<VirtualHost *:80>
+    Servarname www.oranges.com
+    DocumentRoot /var/www/oranges
+</VirtualHost/>
+
+the appilcation are need to be preented in the location
+
+if DNS is setuped in etc/host means we can givve the website name or we can use the ip address.
+
+any changes made need to restart the service. service httpd restart
+
+-----------------------------
+Apache Tom cat
+-----------------------------
+It used to host the dynamic applications.
+
+Installation
+Step 1 
+sudo wget https://downloads.apache.org/tomcat/tomcat-11/v11.0.18/bin/apache-tomcat-11.0.18.tar.gz
+
+Step2
+extract sudo tar -xzf apache-tomcat-11.0.18.tar.gz
+
+Optional
+Step3 rename
+sudo mv apache-tomcat-11.0.18 apache-tomcat-11
+
+Step3
+Start sudo /opt/apache-tomcat-11/bin/startup.sh
+
+
+To Change the ports
+sudo vi /opt/apache-tomcat-11/conf/server.xml
+Change 8080 to your desired port, for example 9090:

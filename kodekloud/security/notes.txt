@@ -1,0 +1,108 @@
+ssh(Secure Shell) & tls certificate
+
+In Web servers
+
+When user connects with server (shares some data ex user name and password)
+The tls certificate ensure that all the data is been encryped and sent.
+
+Symmenteric Encryption
+    -> Through Client the data will be sent as encrypt ex: username and password
+    -> But the server needs the key so that it can decrypt it and get the original data.
+    -> They key will be send through the network so that may cause hackers to decrypt.
+    -> It is a single key.
+
+Asymmentric Encryption:
+    -> THis Encryption will work on the pair of keys.
+    -> Private key and Public key
+
+Public key
+    -> A lock that you can give it ot anyone
+
+Private key
+    -> The only key that opens that lock
+
+SSH - How it works
+     SSH is used to safly connect to the remove servers
+
+Setting up the keys
+* Genere the key pair on your laptop by
+    ssh-keygen -t rsa -b 4096
+This creates:
+    ~/.ssh/id_rsa → Your private key (NEVER share this!)
+    ~/.ssh/id_rsa.pub → Your public key (safe to share)
+
+Copy the public key to the server by below commands
+
+    -> ssh-copy-id user@server-ip
+
+    -> This adds your public key to the server's `~/.ssh/authorized_keys` file.
+
+### How SSH Authentication Works
+```
+┌─────────────┐                           ┌─────────────┐
+│ Your Laptop │                           │   Server    │
+│             │                           │             │
+│ Private Key │                           │ Public Key  │
+└──────┬──────┘                           └──────┬──────┘
+       │                                         │
+       │  1. "I want to connect as user Bob"    │
+       │────────────────────────────────────────>│
+       │                                         │
+       │  2. Server generates random challenge   │
+       │<────────────────────────────────────────│
+       │     "Encrypt this: XyZ123"              │
+       │                                         │
+       │  3. Laptop encrypts with private key    │
+       │────────────────────────────────────────>│
+       │     Sends encrypted challenge back      │
+       │                                         │
+       │  4. Server decrypts with public key     │
+       │     If it matches XyZ123 → LOGIN OK!    │
+       │<────────────────────────────────────────│
+       │     "Welcome, Bob!"                     │
+```
+
+**Key Point:** The server never sees your private key. It just verifies you have it by checking if you can correctly encrypt the challenge.
+
+---
+
+## TLS/SSL Certificates - How They Work
+
+TLS is used for HTTPS (secure websites), securing APIs, etc.
+
+### TLS Uses Certificates
+
+A **certificate** contains:
+- The server's **public key**
+- Server identity info (domain name, organization)
+- Digital signature from a Certificate Authority (CA)
+
+### How HTTPS Connection Works
+```
+┌─────────────┐                           ┌─────────────┐
+│   Browser   │                           │  Web Server │
+│             │                           │ (has cert)  │
+└──────┬──────┘                           └──────┬──────┘
+       │                                         │
+       │  1. "I want https://example.com"        │
+       │────────────────────────────────────────>│
+       │                                         │
+       │  2. Server sends certificate            │
+       │<────────────────────────────────────────│
+       │     (contains server's PUBLIC key)      │
+       │                                         │
+       │  3. Browser verifies certificate        │
+       │     - Is it signed by trusted CA?       │
+       │     - Is domain name correct?           │
+       │     - Is it expired?                    │
+       │                                         │
+       │  4. Browser generates session key       │
+       │     Encrypts it with server's PUBLIC    │
+       │────────────────────────────────────────>│
+       │                                         │
+       │  5. Server decrypts with PRIVATE key    │
+       │     Now both have the session key!      │
+       │                                         │
+       │  6. All data encrypted with session key │
+       │<───────────────────────────────────────>│
+
