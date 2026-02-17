@@ -1,0 +1,112 @@
+-------------------------------------
+IAC - Infrastructure as Code
+-------------------------------------
+    -> Write code to configure the cloud so that we dont want to go to management console and manually do the process.
+    -> Start and end the process.
+
+We can do this with shell script:
+    We need to write the script and we can exceute the script anytime.
+    But the script is hard to write and hard to automate.
+    Thats why the terraform and Ansible are came to picture
+
+-------------------------------------
+Types of IAC Tools
+-------------------------------------
+Configuration Management Tools
+    -> Ansible
+    -> puppet
+    -> saltstack
+
+Server Template
+    ->docker
+    -> HashCorp Packer
+    -> HashiCorp Vagrant
+
+Provisioning Tools
+    -> HashiCorp terraform
+    -> CloudFOrmation
+
+-------------------------------------
+Configuration Management Tools
+-------------------------------------
+Designed to install and manage solutions
+Maaintain Standard structure
+The designed to run on multiple remote resourses at once.
+Ansible playbook is used for version control repositaory
+The most important feature is they are Idempotent
+Idempotent means 
+    -> You can run the code multiple times
+    -> Every time you run, it will do only the nesessary steps to bring the environment stable.
+    -> Ignore the already working code and dont need now to execute.
+
+-------------------------------------
+Server Template Tools
+-------------------------------------
+    -> Pre installed software and Depedency is avaiable
+    -> Virtual Machine or Docker images will be avaiable to ready to use
+    -> Immutable Infrastructure. As any changes to made , we need to create the new image and redeploy we cant update the exisitng images top of it.
+
+-------------------------------------
+Provisioning Tools
+-------------------------------------
+    -> Deploy Immutable Infrastructure resourses
+    -> Servers,Databases,Network Components etx,
+    -> Multiple Providers
+
+-------------------------------------
+Terraform
+-------------------------------------    
+
+It is single binary and open sourece.
+very fast to create an process and work in multi clouds tech
+Bigest advantage is that Terraform has abitlity to deploy multiple accross multiple platform
+Terrform has many providers to make work the almost every Infrastructure platforms
+The code which we write for terrform is HCL - HashiCorp Configuration Language.
+
+The Terraform has 3 phases at exceution phases.
+    -> Init
+    -> Plan
+    -> Apply
+
+At start it it wll initalixe the project
+It will plan what needs to be execute.
+ex:
+    in HCL we mentioned 3 instance means like aws_instance,aws_bucket,aws_aim_user
+    It will plan what servcie needs to call.
+After plan it will execute the plan
+
+-------------------------------------
+HCL Language
+-------------------------------------
+ex syntax is 
+
+resource <providername> "resoucename" {
+    key1 = value1
+    key2 = value2
+}
+
+For local file resource we will write the config as 
+
+resource "local_file" "pet" {
+    filename = "/root/pets.txt"
+    content = "We love pets"
+}
+
+the word "local_file" is the provider name we can get it from the terraform site,
+"pet" is the name of the resouce which we can use anything
+filename and content keys are the need to be used for the "local_file" provider.
+some keys will mandatory some are optional here the filename is mandatory.
+
+commands to execute
+    -> terraform init (to initalize the setup based on the config)
+    -> terraform plan (It will download the provider plugin and make plan to excute)
+    -> terraform apply (To apply the planned context)
+    -> terraform show (Used to seee the details)
+    -> We can update the the config file and after update if you give terraform plan means it will show the changes as git changes.Then we can give terraform apply.It will delete the file and recreate it will the latest config.
+    -> terraform destroy (to destory)
+
+
+-------------------------------------
+Terraform  PRoviders
+-------------------------------------
+

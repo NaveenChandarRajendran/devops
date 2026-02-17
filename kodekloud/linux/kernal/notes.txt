@@ -1,0 +1,32 @@
+-----------------------
+kernal
+-----------------------
+THe Linux kernal is resposnible for the
+    -> Memory Management.
+    -> Process Management
+    -> Device Management
+    -> System calls and Security
+
+-----------------------
+kernal Verisons
+-----------------------
+Command:
+-> uname
+   Output : Linux
+
+-> uname -r 
+   4.15.0-72-generic
+
+where the 4 is Kernal veriosn,15 is major version,0 is minor version,72 is patch release
+generic = Distro Specific Info
+
+
+-----------------------
+kernal and User Space
+-----------------------
+    IT has two types
+        -> Kernal Space
+        -> User space.
+
+Kernal Space
+
