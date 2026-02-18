@@ -107,6 +107,262 @@ commands to execute
 
 
 -------------------------------------
-Terraform  PRoviders
+Input Variables
+-------------------------------------
+create new file as varible.tf
+
+ex:
+
+variable "filename"{
+    default = "/root/pets/txt"
+}
+
+variable "content"{
+    default = "We love pets"
+}
+
+
+in main.tf
+
+resource "local_file" "pet" {
+    filename = var.filename
+    content = var.content
+}
+
+we can edit the variable any time and do terraform apply
+
+-------------------------------------
+Variables Block
+-------------------------------------
+    type and desctrition we can use in resource
+
+string
+variable "content"{
+    default = "We love pets",
+    type = string
+    desctrition = sample //good to have
+}
+List
+variable prefreix{
+    type = list or list(string)
+    default = ['Mr','Mrs']
+    desctrition - sample
+}
+
+resource "local_file" "my-pet" {
+    prefix = var.prefix[0]
+}
+
+
+Map
+
+variable "file-content"{
+    type = map
+    default = {
+        "statement 1" = "We love pets!"
+        "statement 2" = "We love pets!"
+    }
+}
+
+usesage:
+
+resource "local_file" "my-pet" {
+    filename = var.filename
+    content = var.file-content["statement2"]
+}
+
+Set
+Set is also same as list but in array we cant put the same value
+
+ex:
+
+variable prefix{
+    type = set or set(string)
+    default = ['Mr','Mrs'] -> good  default = ['Mr','Mrs','Mr']  -> bad not allowed
+    desctrition - sample
+}
+
+Object
+
+We can use our entire variables in a same object and refer
+
+variable "bella" {
+    type = object({
+        name = string
+        color = string
+        age = number
+        food = list(string)
+        favrite_pet = bool
+    })
+}
+
+Tuples
+
+variable kitty{
+    type = tuple([string,number,bool])
+    default = ["cat",7,true]
+} 
+
+We cant give more than the tuple format 
+ex:
+Failed case
+variable kitty{
+    type = tuple([string,number,bool])
+    default = ["cat",7,true]
+}
+
+-------------------------------------
+Accessing variables in resource
+-------------------------------------
+Way 1
+We can put variable as empty state like this
+variable kitty{
+} 
+
+so now if we run terraform apply means 
+in terminal it will prompt in that we can give the values
+
+Way 2
+in terraform apply command we can give like
+
+terraform apply -var "filename=/root/pets.txt"
+-var "contant=we love Pets"
+
+by mentioning -var we can do as many variable and run
+
+Way3
+
+We also give value as env variables. followed by TF_VAR
+
+Ex:
+export TF_VAR_filename="/root/pets.txt"
+export TF_VAR_content="We love pets"
+export TF_VAR_prefix="Mrs"
+terraform apply
+
+Way4
+
+we can create an seperate file for variable. the file must be in .tfvars
+
+ex:
+new file called terraform.tfvars
+
+filename = "/root/pets.txt"
+content = "We love pets"
+
+terraform apply
+
+If you create the variable file with terraform.tfvars means the terraform apply starightly work.
+
+If you give custom name for variable means on apply you need to give file name
+
+Ex:
+terraform apply -var-file variable.tfvars
+
+Variable Definition Precedence (Order of execution )
+
+Imagine in all format we have variable files (Way1,2,3,4)
+
+So terraform what will consider as value. in what order it will take?
+
+Order
+1 -> Environmanet Variables
+2 -> terraform.tfvars
+3 -> <anyfilename>.tfvars (alphabetical order)
+4 -> -var or -var-file(comnined-line flags)
+
+
+-------------------------------------
+Resource Attribure Refrence
+-------------------------------------
+In real life the resouces mostly will be link to link each other means
+
+one output of resouce needs to send to input of other resource.
+Link/Chain will be there like functions in js returns
+
+Every/some resource type has some return value.If we check in official docs we can see it in Attribute Refrence
+
+Ex: the refereance randam_pet will return the pet name as [id=Mr.Bull]
+
+so in tf file
+
+resource "local_file" "pet"{
+    filename = var.filename
+    content : "My faverite pet is ${random_pet.my-pet.id}"
+}
+
+resouce "random_pet" "my-pet"{
+    prefix = var.prefix
+}
+
+
+-------------------------------------
+Implicit Dependency
+-------------------------------------
+resource "local_file" "pet"{
+    filename = var.filename
+    content : "My faverite pet is ${random_pet.my-pet.id}"
+}
+
+resouce "random_pet" "my-pet"{
+    prefix = var.prefix
+}
+
+in the above resouce when terraform apply first creat the random_pet then create the local_file
+
+when you destory the resouce, it will remove the local_file then randam_pet
+
+The terraform will decide the depency according that is Implicit Dependency
+
+
+-------------------------------------
+Explicit Dependency
+-------------------------------------
+Image the local_file content does not refer to random_pet
+
+ex:
+resource "local_file" "pet"{
+    filename = var.filename
+    content : "My faverite pet is MR.Cat"
+}
+
+but still we can mention the order to excute before the local_file to excute by giving the depends_on =[]
+
+Ex:
+resource "local_file" "pet"{
+    filename = var.filename
+    content : "My faverite pet is MR.Cat"
+    depends_on = [
+        random_pet.my-pet
+    ]
+}
+
+the depends_on is array we can give as many can
+
+-------------------------------------
+Output variables
 -------------------------------------
 
+We can store the return value of the resources
+
+Ex:
+
+output "pet-name"{
+    value = random_pet.my-pet.id,
+    desctrition = "mY fAVERITE pET nAME"
+}
+
+We can see the output values
+terraform output
+terraform output pet-name
+
+
+-------------------------------------
+Terraform State
+-------------------------------------
+
+When we will terraform apply means in the directory we will get terraform.tfstate.
+
+this know the changes current state of the main file.
+
+It is the blueprint by seeing that json we can get some knowlegde
