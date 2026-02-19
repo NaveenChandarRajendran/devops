@@ -366,3 +366,140 @@ When we will terraform apply means in the directory we will get terraform.tfstat
 this know the changes current state of the main file.
 
 It is the blueprint by seeing that json we can get some knowlegde
+
+-------------------------------------
+Terraform Commands
+-------------------------------------
+
+terraform validate
+    Before giving the plan or apply we can validate the file has correct syntax or not.
+    It will returj as success
+
+terraform fmt
+    used to format tje file.Very usefull
+
+terraform show
+terraform refresh
+terraform graph
+    It will show our config in grapgh
+
+-------------------------------------
+Mutable and immutable Infrastucture
+-------------------------------------
+Mutable:
+    Updrading the current software version
+
+Non mutable:
+    When we will terraform apply when you changed a thing in file means.It will create an another new config only.
+    Everytime new config only will generate.
+
+-------------------------------------
+LifeCycle Rules
+-------------------------------------
+THe terraform will have the non mutable process as defaults
+    -> But some case you dont have to be work like that.
+    -> Sometime you need to create the updated config file before deleting the current config file
+    -> Or Sometime you dont want to delete the current config itself
+
+In this cases lifecycle rules will help.
+The syntax for this is 
+lifecycle {
+    <rules> = boolean or list
+}
+
+create_before_destroy
+    THis rule will generate the new config based on the changes and delete the old config file
+ex:
+lifecycle {
+    create_before_destroy = true
+}    
+
+prevent_destroy:
+    This ensure that no delete on the config
+
+ignore_changes:
+    IT will ignore the changes based on the some property of resources
+    SO it accept as list
+Ex:
+resouce "aws_instance" "webserver"{
+    ami ="ami-sdsadas"
+    instantce_type = "tw.micro"
+    tags = {
+        Name = "ProjectA-webserver"
+    }
+    lifecycle{
+        ignore_changes = [
+            tags
+        ]
+    }
+}
+If does not consider the tag
+
+-------------------------------------
+Terraform with AWS IAM
+-------------------------------------
+
+IAM -> Identity access Management
+
+resouce "aws_iam_user" ""admin-user"{
+    name="lucy"
+    tags = {
+        Description = "Technical Lead"
+    }
+}
+
+terraform plan -> will throw the error
+error credential needs to provide
+for this need to give aws provider
+
+provider "aws"{
+    region ="us-west-2"
+    access_key = ""
+    secret_key = ""
+}
+
+
+resouce "aws_iam_user" ""admin-user"{
+    name="lucy"
+    tags = {
+        Description = "Technical Lead"
+    }
+}
+
+now it will work
+
+TO add the IAM Policy. we need to use the aws_iam_policy provider by giving the policy json
+
+Ex:
+
+resouce "aws_iam_policy" ""adminUser"{
+    name="AdminUsers"
+    policy = 
+}
+
+To provide the json we can create the seperate file as json and import here
+
+Ex:
+resouce "aws_iam_policy" ""adminUser"{
+    name="AdminUsers"
+    policy = file("admin-policy.json")
+}
+
+Full code of providing assecess is
+
+resouce "aws_iam_user" ""admin-user"{
+    name="lucy"
+    tags = {
+        Description = "Technical Lead"
+    }
+}
+resouce "aws_iam_policy" ""adminUser"{
+    name="AdminUsers"
+    policy = file("admin-policy.json")
+}
+resouce "aws_iam_user_policy_attachment" "lucy-admin-access"{
+    user = aws_iam_user-user.name
+    policy_arn = aws_iam_policy.adminUser.arn
+}
+
+The aws_iam_user_policy_attachment is used to attach the aws policy certificate
