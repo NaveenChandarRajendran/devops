@@ -503,3 +503,237 @@ resouce "aws_iam_user_policy_attachment" "lucy-admin-access"{
 }
 
 The aws_iam_user_policy_attachment is used to attach the aws policy certificate
+
+-------------------------------------
+Terraform with AWS S3
+-------------------------------------
+
+//To create the aws s3 bucket
+resouce "aws_s3_bucket" "finance"{
+    bukcet="fiance-20022026"
+    tags = {
+        Description = "FInancePayroll"
+    }
+}
+
+//To store the files in AWS S3 cucket
+resouce "aws_s3_bucket_object" "finance-2026"{
+    content="/root/fiance-20022026"
+    key = "finance-2026.doc"
+    bucket = aws_s3_bucket.finance.id
+}
+
+//TO give permission to the user we need policy to access S3 bucket but what if already user group or manually in aws conosle management the user is created. for that we need to set the data to terraform.
+
+data "aws_iam_group" "finance-data"{
+    group_name = finance-analytics
+}
+
+By adding this , the terraform hae the user info in the ts.state file
+
+//to give policy to the bucket
+
+resouce "aws_s3_bucket_policy" "finance-policy"{
+    bucket = aws_s3_bucket.fiance.id
+    policy = <<EOF policy json>>
+}
+
+-------------------------------------
+Remote State and State Locking
+-------------------------------------
+
+To keep the state.tf to any version control is risk, because it has sentitive data like password and ip address.
+
+State Locking
+    Image it two develpers are working in the same state.tf file and the state file is in remote  and trying to terraform apply means conflict come
+
+DevOps Engineer 1          DevOps Engineer 2
+      ↓                          ↓
+terraform apply            terraform apply
+      ↓                          ↓
+creating 5 servers         deleting 3 servers
+      ↓                          ↓
+         CONFLICT! 💥
+    terraform state file gets CORRUPTED
+
+
+The State locking is not supported in git.
+We need remote state backend.
+We need to put the state file in remote backend. and whenever developers are doing terraform apply it save in the remote.
+The backend will take care about the statelocking
+
+Most Common Remote Backends in Industry:
+AWS S3 + DynamoDB    ← most popular
+Terraform Cloud      ← HashiCorp's own solution
+Azure Blob Storage   ← for Azure teams
+Google Cloud Storage ← for GCP teams
+
+-------------------------------------
+Terraform State Commands
+-------------------------------------
+
+TO edit state file we need to use the terraform state command not vi terraform.tfstate
+
+EX:
+
+the terraform state show aws_s3_bucket.finance
+Syntax:
+terraform state <subcommand> [options] [args]
+The sub commands are 
+    -> list
+    -> mv
+    -> pull
+    -> remote
+    -> show
+
+list
+* terraform state list
+    It will show all the resource name which used in the main.tf file.
+* terraform state list aws_s3_bucket.finance
+    this list the mentioned resource name if present
+
+show
+* terraform state show aws_s3_bucket.finance
+    IT will show details of the resource with arguments which passed to resources and everything
+
+mv -(move)
+* If we need to update the resouce name without recreating means we can use mv command
+Ex:
+syntax:
+    terraform state mv [options] SOURCE DESTINATION
+
+    terraform state mv aws_Dynamodb_table.state-locking aws_dynamodb_table.state-locking-db
+
+    this makes the required update in the sstate file.
+
+    So when we do terraform apply
+    They wont be any new added or update of the file will be occurerd.
+
+    But in the main.tf file we need to manuall edit the aws_Dynamodb_table.state-locking to aws_Dynamodb_table.state-locking-db
+
+pull
+    We see that state file will be present in the remote state not in our local system.
+
+    for that we need to pull command.It will pull from the remote and show you the state file.
+
+    terraform state pull
+
+rm
+    To remove the resouce we can use terraform state rm aws_Dynamodb_table.state-locking
+
+
+-------------------------------------
+Terraform AWS EC2
+-------------------------------------
+
+resource "aws_instance" "webserver"{
+    ami = "ami-0edab...."
+    instance_type = "t2.micro"
+    tags = {
+        Name = "webserver"
+        Description = "An Ngnix Webserver on Ubuntu"
+    }
+    user_data = <<-EOF  
+                sudo apt update
+                suda apt i
+}
+
+provider "aws"{
+    region = "us-west-1"
+}
+
+* By above command we can create the remote ec2 server but how to connect it form our local client.
+
+    As every OS need to authentication before connection to the remove server
+
+    if ubuntu means we need SSH key and value
+    if windows means we need username and password
+
+    For this we need to use aws_key_pair.web.id
+
+    resouce "aws_key_pair" "web"{
+        public_key = file("/root./ssh/web.pub")
+    }
+
+    then add a attribute called key_name in the above resouce like this
+        key_name = aws_key_pair.web.id
+
+* Then we need to add the IP Id in the ec2 instance for accessing it
+
+    resouce "aws_security_group" "ssh-access"{
+        name ="ssh-access"
+        descriptiom = "Allow SSH access from the Internet"
+        ingress {
+            from_port = 22
+            to_port = 22
+            protocol = "tcp"
+            cidr_blocks =["0.0.0.0/0"]
+        }
+    }
+
+    After adding it we need to mention that in the main resource with attribute like below
+
+    vpc_security_group_ids = [aws_security_group.ssh-access.id]
+
+    Use put to see the public id so we can connect the instance in our system
+
+    output publicip{
+        value = aws_instance.webserver.publick_ip
+    }
+
+
+-------------------------------------
+Terraform Taint
+-------------------------------------
+
+When we do the terraform apply if it crash, the crash resouce will be marked as tainted by terraform.
+
+When ever we do terraform plan the tained resouce again will be created newly
+
+But in some case we manually will do the taint command.
+Ex:
+    terraform taint aws_instance.webserver
+
+    By this the resouce is made as taint when ever we do terraform plan the resource will create new
+
+Why taint us usefull?
+    If user changed any thing in EC2 in direct console means in terraform that will outdated. 
+
+    In that cases when you want to update when you give terraform plan it will be automaticaaly create new resource so update thing will come
+
+To untaint
+    terraform untaint aws_instance.webserver
+
+-------------------------------------
+Terraform Debugging
+-------------------------------------
+To debug the terraform will export the logs in terms for five log levels
+    -> info
+    -> warning
+    -> error
+    -> debug
+    -> trace
+
+To export log in file use as
+    export TF_LOG_PATH = /tmp/terraform.log
+
+ -------------------------------------
+Terraform Import
+-------------------------------------
+
+The import is used when some sources are created by other methods like directly in aws statement and others tools like Ansible.
+
+To get that other source to get control of terrafor, we need to use import.
+
+Syntax:
+
+terraform import <resouce_type>.<resource_name> <attribute>
+
+When you run 1st time
+    terraform import aws_instance.webserver-2 i-026e13....
+
+You will get the error as, please create its configuration in rrot module,in order to fix this. We need to create an empty resourses
+
+resouce "aws_instance" "web-server-2"{
+    # ( resource arguments)
+}
