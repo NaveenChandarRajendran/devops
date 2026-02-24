@@ -717,7 +717,7 @@ To debug the terraform will export the logs in terms for five log levels
 To export log in file use as
     export TF_LOG_PATH = /tmp/terraform.log
 
- -------------------------------------
+-------------------------------------
 Terraform Import
 -------------------------------------
 
@@ -737,3 +737,65 @@ You will get the error as, please create its configuration in rrot module,in ord
 resouce "aws_instance" "web-server-2"{
     # ( resource arguments)
 }
+
+-------------------------------------
+Terraform module
+-------------------------------------
+
+We can split the common resouce as seperate folders and use it here.
+
+it will be used as 
+
+module "<name>"{
+    source ="./terraform-project"
+}
+
+There are two types of module 
+    1.Local module (which we are created as per needs)
+    2.Registry module(from hashicorp verified and community) we have some modulues which we can use it directly behind they will maintain the module sections
+-------------------------------------
+Terraform functions
+-------------------------------------
+Numberic functions
+    min()
+    max()
+    ceil(10.1) -> 11
+    ceil(10.9) -> 11
+    floor(10.1) -> 10
+
+String functions
+    split(",", "ami-xyz","AMI_ABC","ami-efg")
+    ["ami-xyz","AMI_ABC","ami-efg"]    
+
+    lower(var.ami)
+    ["ami-xyz","ami_abc","ami-efg"]
+
+    upper(var.ami)
+    [AMI-XYZ,"AMI_ABC","AMI-EFG"]
+
+    title(var.ami)
+    Ami-Xyz,AMI_ABC,Ami-efg
+
+    substr(var.ami,0,7)
+    ami-xyz
+
+    join(",",  ["ami-xyz","AMI_ABC","ami-efg"])
+    "ami-xyz","AMI_ABC","ami-efg"
+
+collection functions
+    length(var.ami)
+    3
+
+    index(var.ami, "AMI_ABC")
+    1
+
+    element(var.ami,2)
+    ami-efg
+
+    contains(var.ami,"AMI_ABC")
+    true
+
+Map functions
+    
+
+
