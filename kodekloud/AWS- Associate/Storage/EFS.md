@@ -1,0 +1,30 @@
+- **EFS (Elastic File System)**
+    - Shared network drive for multiple EC2s
+    - Like Google Drive for your EC2 instances
+    - Works across ALL availability zones
+- **When to use EFS:**
+    - Multiple EC2s need same files
+    - User uploaded files (private documents)
+    - Shared config files between EC2s
+    - Centralized logs from all EC2s
+- **EFS (Elastic File System)**
+    - Shared network drive for multiple EC2s
+    - Like Google Drive for your EC2 instances
+    - Works across ALL availability zones
+- **When to use EFS:**
+    - Multiple EC2s need same files
+    - User uploaded files (private documents)
+    - Shared config files between EC2s
+    - Centralized logs from all EC2s
+- **vs EBS:**
+    - EBS = one EC2 only, one zone only
+    - EFS = many EC2s, all zones
+- **vs S3:**
+    - S3 = public files, accessed via URL/API
+    - EFS = private files, mounted as folder
+- **Key facts:**
+    - Linux only (no Windows support)
+    - Auto grows/shrinks (no size limit)
+    - Pay per GB used (not provisioned)
+    - Mount like normal folder (/efs)
+    - Add to fstab for auto mount on reboot
